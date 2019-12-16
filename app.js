@@ -14,18 +14,19 @@ const createChocies = (data) =>{
   return data.reduce((n, o, i) => {
    const {name, epigId, iuId, iuName, iuPassword} = o;
    const firstIndex = i === 0;
-   const lastIndex = i === data.length;
+   const lastIndex = i+1 === data.length;
    if (firstIndex) {
     n.push(({title: `Test:: ISE_Connection`, description: `Test Connectivity`, value: {switchSelect: 'iseTest'}}));
    } 
    n.push(({title: `View:: ${name} Guest_WiFi_EndPoints`, description: `Count then number of EndPoints in a group`, value: {switchSelect: 'guestEndpoints', epigId}}));
-   n.push(({title: `Count:: ${name} Guest_WiFi_EndPoints`, description: `Retrieved the EndPoints in a group`, value: {switchSelect: 'countGuestEndpoints', epigId}}));
+   n.push(({title: `Count:: ${name} Guest_WiFi_EndPoints`, description: `GET the EndPoints in a group`, value: {switchSelect: 'countGuestEndpoints', epigId}}));
    n.push(({title: `Update:: ${name} Guest_WiFi_Password`, description: `UPDATE Guest WiFi Password`, value: {switchSelect: 'updateGuestpassword', epigId, iuId, iuPassword, iuName}}));
    n.push(({title: `Delete: ${name} Guest_WiFi_EndPoints`, description: `DELETE EndPoints in a group`, value: {switchSelect: 'deleteGuestEndpoints', epigId}}));
    n.push(({title: `Delete&Update:: ${name} Guest WiFi EndPoints & Password`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpassword', epigId,iuId, iuPassword}}));
-   if (lastIndex) {
-     const allEpigId = data.map((d) => d.epigId);
-     const allIuId = data.map((d) => d.iuId);
+   if (lastIndex) { 
+    const allEpigId = data.map((d) => d.epigId);
+    const allIuId = data.map((d) => d.iuId);
+    n.push(({title: `Get_All:: ALL_Guest_WiFi_EndPoints`, description: `GET EndPoints in a groups`, value: {switchSelect: 'guestEndpointsAll', epigId:allEpigId}}));
     n.push(({title: `Delete&Update_All:: ALL_Guest_WiFi_EndPoints_&_Passwords`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpasswordAll', epigId:allEpigId,iuId:allIuId, iuPassword}}));
     n.push(({title: `Exit`, description: `Do nothing and exit`, value: {}}));
   } 
@@ -58,13 +59,16 @@ const confirm = [
     const {switchSelect, epigId, iuPassword = null, iuId = null, iuName = null} = response.value || {switchSelect:null,epigId:null};
     switch (switchSelect) {
         case "iseTest":
-            iseConnectionTest(iseServer,iseAuth,epigId).then((t) => console.log(`Test Succcess \n  Servers Found: \n${t.SearchResult.resources.map(({name}) => "\t"+name).join('\n')}`)).catch(console.log)
+            iseConnectionTest(iseServer,iseAuth,epigId).then().catch(console.log)
             break;
         case "guestEndpoints":
-            iseEndpoints(iseServer,iseAuth,epigId).then((t) => console.log(t.map(({id, name}) => name))).catch(console.log)
+            iseEndpoints(iseServer,iseAuth,epigId).then((t) => console.log(t.cache.map(({id, name}) => name), t.name)).catch(console.log)
+            break;
+        case "guestEndpointsAll":
+            epigId.map((d) => iseEndpoints(iseServer,iseAuth,d).then((t) => console.log(t.cache.map(({id, name}) => name), t.name)).catch(console.log))
             break;
         case "countGuestEndpoints":
-            iseEndpoints(iseServer,iseAuth,epigId).then((t) => console.log(`\n\n\nThere are ${t.length} EndPoints\n\n\n`)).catch(console.log)
+            iseEndpoints(iseServer,iseAuth,epigId).then((t) => console.log(`\n\n\nEPIG ${t.name} contains ${t.cache.length} MAC Addresses \n\n\n`)).catch(console.log)
             break;
         case "updateGuestpassword":
             const updateConfirmation = await prompts(confirm);
