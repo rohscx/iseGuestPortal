@@ -6,11 +6,14 @@ const caseCountGuestEndpoints = require('./lib/promps/caseCountGuestEndpoints.js
 const caseUpdateInterUserPassword = require('./lib/promps/caseUpdateInterUserPassword.js');
 const caseDeleteGuestEndpoints = require('./lib/promps/caseDeleteGuestEndpoints.js');
 const caseCountGuestEndpointsAll = require('./lib/promps/caseCountGuestEndpointsAll.js');
+const caseDeleteUpdateGuestEndpointsAll = require('./lib/promps/caseDeleteUpdateGuestEndpointsAll.js');
+const caseDeleteGuestEndpointsAll = require('./lib/promps/caseDeleteGuestEndpointsAll.js');
+
 const dotenv = require('dotenv').config();
 
 const iseAuth = process.env.ISE_AUTH;
 const iseServer = process.env.ISE_SERVER;
-const guestEpigs = JSON.parse(process.env.ISE_GUEST_EPIG_IDS);
+const guestEpigs = require('./iseGuestConfig.json');
 
 
 const createChocies = (data) =>{
@@ -28,10 +31,11 @@ const createChocies = (data) =>{
    n.push(({title: `Delete_&_Update:: ${name} Guest WiFi EndPoints & Password`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpassword', epigId,iuId, iuPassword}}));
    if (lastIndex) { 
     const allEpigId = data.map((d) => d.epigId);
-    const allIuId = data.map((d) => d.iuId);
+    const allAuth = data.map(({iuId,iuName,iuPassword, epigId}) => ({iuId,iuName,iuPassword,epigId}));
     n.push(({title: `View_All:: ALL_Guest_WiFi_EndPoints`, description: `GET EndPoints in a groups`, value: {switchSelect: 'guestEndpointsAll', epigId:allEpigId}}));
     n.push(({title: `Count_All:: ALL_Guest_WiFi_EndPoints`, description: `GET EndPoints in a groups`, value: {switchSelect: 'countGuestEndpointsAll', epigId:allEpigId}}));
-    n.push(({title: `Delete_&_Update_All:: ALL_Guest_WiFi_EndPoints_&_Passwords`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpasswordAll', epigId:allEpigId,iuId:allIuId, iuPassword}}));
+    n.push(({title: `Delete_All:: ALL_Guest_WiFi_EndPoints_&_Passwords`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'caseDeleteGuestEndpointsAll', epigId:data}}));
+    n.push(({title: `Delete_&_Update_All:: ALL_Guest_WiFi_EndPoints_&_Passwords`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpasswordAll', epigId:data}}));
     n.push(({title: `Exit`, description: `Do nothing and exit`, value: {}}));
   } 
    return n;
@@ -92,11 +96,27 @@ const confirm = [
         case "deleteGuestEndpoints":
             const deleteConfirmation = await prompts(confirm);
             if (deleteConfirmation.value == true) {
-              caseDeleteGuestEndpoints(iseServer,iseAuth,epigId,callBack)
+              caseDeleteGuestEndpoints(iseServer,iseAuth,epigId,promptFunction)
             } else {
               console.log('Delete Canceled')
             }     
             break;
+      case "deleteGuestEndpointsAll":
+          const deleteConfirmationAll = await prompts(confirm);
+          if (deleteConfirmationAll.value == true) {
+            caseDeleteGuestEndpointsAll(iseServer,iseAuth,epigId,promptFunction)
+          } else {
+            console.log('Delete Canceled')
+          }     
+          break;
+      case "deleteGuestEndpoints&updateGuestpasswordAll":
+          const deleteUpdateConfirmationAll = await prompts(confirm);
+          if (deleteUpdateConfirmationAll.value == true) {
+            caseDeleteUpdateGuestEndpointsAll(iseServer,iseAuth,epigId,promptFunction)
+          } else {
+            console.log('Delete Canceled')
+          }     
+          break;
 
         default:
             console.log('Thanks for using the App have a great day!!')
