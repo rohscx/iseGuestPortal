@@ -28,7 +28,7 @@ const createChocies = (data) =>{
    n.push(({title: `Count:: ${name} Guest_WiFi_EndPoints`, description: `GET the EndPoints in a group`, value: {switchSelect: 'countGuestEndpoints', epigId}}));
    n.push(({title: `Update:: ${name} Guest_WiFi_Password`, description: `UPDATE Guest WiFi Password`, value: {switchSelect: 'updateGuestpassword', epigId, iuId, iuPassword, iuName}}));
    n.push(({title: `Delete: ${name} Guest_WiFi_EndPoints`, description: `DELETE EndPoints in a group`, value: {switchSelect: 'deleteGuestEndpoints', epigId}}));
-   n.push(({title: `Delete_&_Update:: ${name} Guest WiFi EndPoints & Password`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpassword', epigId,iuId, iuPassword}}));
+   n.push(({title: `Delete_&_Update:: ${name} Guest WiFi EndPoints & Password`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpassword', epigId, iuId, iuPassword, iuName}}));
    if (lastIndex) { 
     const allEpigId = data.map((d) => d.epigId);
     const allAuth = data.map(({iuId,iuName,iuPassword, epigId}) => ({iuId,iuName,iuPassword,epigId}));
@@ -97,6 +97,15 @@ const confirm = [
             const deleteConfirmation = await prompts(confirm);
             if (deleteConfirmation.value == true) {
               caseDeleteGuestEndpoints(iseServer,iseAuth,epigId,promptFunction)
+            } else {
+              console.log('Delete Canceled')
+            }     
+            break;
+        case "deleteGuestEndpoints&updateGuestpassword":
+            const deleteUpdateConfirmation = await prompts(confirm);
+            if (deleteUpdateConfirmation.value == true) {
+              caseDeleteGuestEndpoints(iseServer,iseAuth,epigId,promptFunction)
+              caseUpdateInterUserPassword(iseServer,iseAuth,iuId,iuName,iuPassword,promptFunction)
             } else {
               console.log('Delete Canceled')
             }     
