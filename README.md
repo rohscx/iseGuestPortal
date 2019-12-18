@@ -4,13 +4,17 @@ Update guest Portals
 ## On before you run the application for the first time install dependencies
 From the command line, navigate to the folder "iseGuestPortal"
 Execute the following command from the Command line:
+```
 npm install
+```
 
 ## Before you run the application for the first time add a ".env" file
 make a file ".env"
 add the folowing lines and replace the <<>> and everything inbetween:
+```
 ISE_AUTH = Basic <<yourBasicAuthStringHere>>
 ISE_SERVER = <<yourServersFQDN>>:<<9060>>
+```
 
 ## Before you run the application for the first time add a "iseGuestConfig.json" file
 make a file "iseGuestConfig.json"
@@ -45,6 +49,7 @@ replace the <<>> and everything inbetween:
 ## How start the CLI application
 From the command line, navigate to the folder "iseGuestPortal"
 Execute the following command from the Command line:
-
+```
 node app.js
+```
 
