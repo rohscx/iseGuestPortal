@@ -1,6 +1,6 @@
 {
   "name": "iseguestportal",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Update guest Portals",
   "main": "app.js",
   "directories": {
