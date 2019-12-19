@@ -34,7 +34,7 @@ const createChocies = (data) =>{
     const allAuth = data.map(({iuId,iuName,iuPassword, epigId}) => ({iuId,iuName,iuPassword,epigId}));
     n.push(({title: `View_All:: ALL_Guest_WiFi_EndPoints`, description: `GET EndPoints in a groups`, value: {switchSelect: 'guestEndpointsAll', epigId:allEpigId}}));
     n.push(({title: `Count_All:: ALL_Guest_WiFi_EndPoints`, description: `GET EndPoints in a groups`, value: {switchSelect: 'countGuestEndpointsAll', epigId:allEpigId}}));
-    n.push(({title: `Delete_All:: ALL_Guest_WiFi_EndPoints_&_Passwords`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'caseDeleteGuestEndpointsAll', epigId:data}}));
+    n.push(({title: `Delete_All:: ALL_Guest_WiFi_EndPoints`, description: `DELETE EndPoints in a group`, value: {switchSelect: 'deleteGuestEndpointsAll', epigId:data}}));
     n.push(({title: `Delete_&_Update_All:: ALL_Guest_WiFi_EndPoints_&_Passwords`, description: `DELETE EndPoints in a group & UPDATE Guest WiFi Password`, value: {switchSelect: 'deleteGuestEndpoints&updateGuestpasswordAll', epigId:data}}));
     n.push(({title: `Exit`, description: `Do nothing and exit`, value: {}}));
   } 
